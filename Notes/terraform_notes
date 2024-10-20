@@ -1,0 +1,39 @@
+for azure need to pass subscription id and feature in provider
+
+
+subscription id ===> u can export it on cli or set as environmental variable in local computer
+
+
+
+**terraform validate ===> used to check configuration files syantax is correct and are consistent before deployment
+
+**implicit dependancy ===> means resource in terraform uses attribute of other resource 
+
+**explicit dependancy ===> means here adding meta argument 
+depends_on []
+
+
+** idempotenace
+
+you will get same result (desired state) irrespective of number of times of execution --hence we called terraform execution is idempotent
+
+
+**terraform console to validate expression we used in resource 
+
+** count = is used to create almost identical objects in block
+
+*** .tfvars = this variable file is used to provide variable values and command used to create infra 
+
+terraform apply -var-file='<name>.tfvars'
+
+
+***expression ===> using this we can take value from somewhere else , calculate or evalute it 
+                   Result of expression is a value
+                   All values have type  (string | number | bool | map | list | set)
+
+
+***local ===> local value are assigned to expression so that we can use them multiple times instead of repeating expression 
+
+***conditional expression ===> uses value of booolena expression to select one of two values
+eg -condition ? true_val : false_val
+

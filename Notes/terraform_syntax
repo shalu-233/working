@@ -1,0 +1,15 @@
+Block
+resource "<resource_type>" "name"
+
++++++++++++
+
+
+to use attributes the syntax is 
+
+<resource_type>.<name>.<attribute>
+
+
+eg
+aws_vpc.base.id
+
+
