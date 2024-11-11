@@ -142,3 +142,16 @@ git fetch origin
 
 Origin is a reference to a remote repository.
 Master is a name for a branch within that repository.
+
+
+
+
+++++++++
+
+how i added notes to git repo:
+
+git add .\Git_notes ----> add to staging area
+git commit -m "Added Notes for Git"   --> its like a save point
+git push origin master    ---> pushing into remote repo
+
+
