@@ -1,0 +1,13 @@
+---
+
+- name: Install Tomcat Webserver from source code
+  hosts: demo
+  become: true
+  become_method: sudo
+  become_user: root
+
+  vars_files: 
+    - var.yml
+   
+  roles:
+    - { role: install-tomcat }

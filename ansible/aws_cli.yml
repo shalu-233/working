@@ -1,0 +1,45 @@
+---
+
+- name: to install aws cli on redhat
+  hosts: demo
+  become: true
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    - name: install unzip on server
+      yum:
+        name: unzip
+        state: present
+
+    - name: install zip file
+      get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: ./awscliv2.zip
+
+    - name: unzip the file
+      unarchive:
+        src: ./awscliv2.zip
+        dest: ./
+        remote_src: yes
+
+    - name: start the cli
+      command: ./aws/install 
+      register: installed_aws_cli
+    
+    - name: installation is done check
+      debug:
+        var: installed_aws_cli.stdout_lines
+
+    - name: check version
+      command: /usr/local/bin/aws --version
+      register: check_version
+
+    - name: status check
+      debug:
+        var: check_version.stdout_lines
+
+
+
+    

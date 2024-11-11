@@ -1,0 +1,54 @@
+---
+
+- name: installation of postegres-17 on redhat machine
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+
+
+  tasks:
+    - name: get the rpm required for postgres
+      get_url:
+        url:  https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dest: /tmp/
+        force: true
+
+    - name: to disable modules in postgresql
+      command: yum -qy module disable postgresql
+        
+    - name: to install rpm 
+      yum: name=postgresql17-server state=present 
+    
+    - name: initialize database
+      command: /usr/pgsql-17/bin/postgresql-17-setup initdb
+      register: status_check
+
+    - name: debug all
+      debug: 
+        msg: "{{ status_check }}"
+      when: ansible_facts['stdout_lines'] == "Initializing database ... OK"
+  
+    - name: enable service and start it
+      systemd_service: 
+        name: postgresql17 
+        enabled: true 
+        state: started 
+
+    - name: check status of service 
+      command: systemctl status postgresql-17 
+      register: service_started
+      when: ansible_facts['state'] == "Active"
+      
+
+    - name: debug msg for service enabled and started
+      debug: 
+        msg: "{{ service_started }}"
+      when: ansibe_facts['state'] == "started"
+
+  
+
+
+
+  

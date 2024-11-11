@@ -1,0 +1,49 @@
+---
+
+- name: installation of postegres-17 on redhat machine
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+
+
+  tasks:
+    - name: get the rpm required for postgres
+      get_url:
+        url:  https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        dest: /tmp/
+        force: true
+
+    - name: to disable modules in postgresql
+      command: yum -qy module disable postgresql
+      
+
+    - name: to install rpm
+      yum: name=postgresql17-server state=present
+
+    - name: initialize database
+      command: /usr/pgsql-17/bin/postgresql-17-setup initdb
+      register: database_initialized
+
+    - name: print msg for database initialize
+      debug:
+        var: database_initialized.stdout_lines
+
+
+    - name: enable service and start it
+      systemd_service:
+        name: postgresql-17
+        enabled: true
+        state: started
+
+    - name: check status of service
+      command: systemctl status postgresql-17
+      register: service_started
+
+    - name: debug msg for service enabled and started
+      debug:
+        var: service_started.stdout_lines
+
+
+
