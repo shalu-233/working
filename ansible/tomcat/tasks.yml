@@ -1,0 +1,45 @@
+---
+
+    - name: download open jdk
+      apt: name={{ open_jkd }} state=present update_cache=yes
+
+    - name: adding group
+      group:
+        name: "{{ service_group }}"
+        state: present
+
+    - name: adding user tomcat
+      user: 
+        name: "{{ service_user }}"
+        create_home: yes
+        shell: /bin/bash
+        group: "{{ service_group }}"
+        
+    - name: creating directory
+      file: path={{ platform_home }}/tomcat/zipfile state=directory owner={{ service_user }} group={{ service_group }} mode="0755"
+
+    - name: download zip file for tomcat
+      get_url: url={{ web_url }} dest={{ platform_home }}/tomcat/
+               owner={{ service_user }} group={{ service_group }}   mode="0644"
+    
+    - name: unzip file
+      unarchive: src={{ platform_home }}/tomcat/apache-tomcat-*  dest={{ platform_home }}/tomcat/
+                 owner={{ service_user }} group={{ service_group }} remote_src=true  mode="0755"
+                 
+    - name: start tomcat service
+      become_user: "{{ service_user }}"
+      command: ./startup.sh
+      args: chdir={{ platform_home }}/tomcat/apache-tomcat*/bin/
+
+      
+    - name: getting status
+      shell: ps -ef | grep "{{ service_user }}"
+      register: service_running
+
+    - name: printing status
+      debug:  
+        var: service_running.stdout_lines
+
+    
+
+

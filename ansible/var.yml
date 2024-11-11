@@ -2,4 +2,4 @@
 
 platform_user: "root"
 platform_group: "root"
-platform_home: "/apps/opt/application/"
+platform_home: "/apps/opt/application"
