@@ -1,6 +1,8 @@
 ---
 
+
 service_user: "tomcat"
 service_group: "tomcat"
 open_jkd: "openjdk-17-jdk"
-web_url: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.31/bin/apache-tomcat-10.1.31.tar.gz"
+web_url: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33.tar.gz"
+platform_home: "/apps/application"
