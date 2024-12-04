@@ -1,0 +1,9 @@
+---
+
+
+home_dir: "/apps/opt/application/python"
+py_url: "https://www.python.org/ftp/python/3.12.6/Python-3.12.6.tgz"
+config_options: "--enable-optimizations --with-ensurepip=install --with-sqlite"
+version: "Python-3.12.6"
+
+

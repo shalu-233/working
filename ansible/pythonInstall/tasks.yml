@@ -1,0 +1,36 @@
+---
+
+- name: downloading required packages
+  apt:
+    name: build-essential
+    state: present
+    update_cache: true
+
+- name: creating directory
+  file:
+    path: "{{ home_dir }}"
+    state: "directory"
+    mode: "755"
+
+- name: extract python tar file
+  unarchive: 
+    src: "{{ py_url }}"
+    dest: "{{ home_dir }}"
+    remote_src: yes
+    mode: "755"
+    
+- name: run the configure command 
+  command:  "./configure --prefix={{ home_dir }}/{{ version }} {{ config_options }}"
+  args:
+    chdir: "{{ home_dir }}/{{ version }}"
+    
+
+- name: compile python source
+  command: "make -j$(nproc)"
+  args:
+    chdir: "{{ home_dir }}/{{ version }}"
+
+- name: install python
+  command: "make altinstall"
+  args:
+    chdir: "{{ home_dir }}/{{ version }}"

@@ -1,0 +1,13 @@
+---
+
+- name: Install Python from source code
+  hosts: demo
+  become: true
+  become_user: root
+  become_method: sudo
+  
+
+  roles: 
+    - role: installPython
+
+  
