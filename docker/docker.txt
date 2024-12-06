@@ -1,0 +1,97 @@
+docker ---> 13
+
+k8 ---> 13
+
+ci/cd ---> 12
+
+
+
+
+
+
+
+docker ---> 5 videos 
+
+
+k8 ---> 
+
+
+ci/cd --->
+
+
+
+
+docker :
+
+sudo usermod -aG docker <user>
+-Port forwarding: has 2 modes
+                  static --------->   -p <hostport>:<containerport>       >>we should be aware which port are free
+		  dynamic ----> -P    >> this will use free port
+-127.0.0.1 ---> loopback ip address
+-containerization
+
+
+
+Activity 1:
+manual steps for a website ubuntu:
+
+sudo apt update -y
+sudo apt install nginx unzip -y
+wget https://www.free-css.com/assets/files/free-css-templates/download/page296/finexo.zip
+unzip finexo.zip
+sudo mv finexo-html/ /var/www/html/crypto
+
+
+manual steps on docker :
+docker run --name ng1 -P -d nginx:1.27
+cd /tmp
+wget https://www.free-css.com/assets/files/free-css-templates/download/page296/finexo.zip
+unzip finexo.zip
+docker container cp /tmp/finexo-html/ ng1:/usr/share/nginx/html/crypto
+
+++++
+
+Activity 2:Run a Spring boot application inside container (Containerizing Spring boot application.)
+
+need jar file on local machine as its not able to download from class link
+
+manual steps:
+sudo apt update -y
+sudo apt install openjdk-17-jdk -y
+cd /tmp
+git clone https://github.com/spring-projects/spring-petclinic.git
+cd spring-petclinic/
+./mvnw package
+cd /tmp/spring-petclinic/target/
+java -jar spring-petclinic-3.4.0-SNAPSHOT.jar
+
+
+docker manual steps:
+
+docker run -it --name test -p 32000:8080 eclipse-temurin:17-jre /bin/bash
+
+(open another tab and run below cp command)
+docker container cp /tmp/spring-petclinic/ test:/tmp/
+cd /tmp/spring-petclinic/target/
+java -jar spring-petclinic-3.4.0-SNAPSHOT.jar
+
+
+++++++++
+Activity3:Run a reactjs application
+
+manual steps:
+git clone https://github.com/aditya-sridhar/simple-reactjs-app.git
+cd simple-reactjs-app
+npm install -y
+npm run start
+
+
+docker container run -it --name rtjs -p 32001:3000 node:18 /bin/bash
+
+(inside container run below command)
+git clone https://github.com/aditya-sridhar/simple-reactjs-app.git
+cd simple-reactjs-app/
+npm install -y
+npm run start
+
++++++
