@@ -5,7 +5,34 @@ subscription id ===> u can export it on cli or set as environmental variable in 
 
 
 
+
+***terraform init ===> 
+initialize working directory containing terraform config files
+initialize backend where we store state files
+download and install necessary plugins
+
+***terraform fmt ===> to format files to ensure consistency
+If you want to format files in the current directory and all subdirectories, use the -recursive flag.
+
+Command: terraform fmt -recursive
+
+
+
 **terraform validate ===> used to check configuration files syantax is correct and are consistent before deployment
+
+it checks syntax is consistent , ready for execution
+best practice before running terraform plan or terraform apply
+it won't checks if resources exist
+
+
+***you can remove resource from being managed by terraform --> terraform state rm <resource_block>
+**we can overwrite backup and state file path but its not recommended
+
+
+*** we can import already existing infrastructure to be managed by terraform
+
+
+
 
 **implicit dependancy ===> means resource in terraform uses attribute of other resource 
 
@@ -34,6 +61,28 @@ terraform apply -var-file='<name>.tfvars'
 
 ***local ===> local value are assigned to expression so that we can use them multiple times instead of repeating expression 
 
-***conditional expression ===> uses value of booolena expression to select one of two values
+***conditional expression ===> uses value of Boolean expression to select one of two values
 eg -condition ? true_val : false_val
+
+
+***state file ===> keeps track of current state of your infrastructure
+it help to make decision
+location - same from where you are running terraform
+file name - terraform.tfstate
+
+
+terraform execution: 
+-> gets current state from provider
+-> compare it with desire state, which becomes plan
+-> execute the plan and store creation details in state files
+
+
+
+**terraform workspace:
+
+**terraform taint:
+
+
+
+
 

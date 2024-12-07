@@ -29,7 +29,19 @@ sudo usermod -aG docker <user>
 		  dynamic ----> -P    >> this will use free port
 -127.0.0.1 ---> loopback ip address
 -containerization
-
+-FROM : to choose base image ---> in documents if you see anything in [] is optional
+-LABEL : used to add the metadata
+-RUN : this will execute the command while building the image
+2 forms- Shell and exec 
+RUN in shell form
+CMD and ENTRYPOINT in exec form
+-EXPOSE : published the port
+-ADD/COPY : they are used to copy the files into docker image
+-CMD : this will be executed as PIC1 i.e. when we start the container this command executes and container will be in running state as long as the PIDs is running
+>when container start it executes what is present in entrypoint and whatever present in CMD becomes argument to entrypoint
+>if entrypoint is not present then whatever written in CMD will be executed 
+>if CMD is not present the whatever written in entrypoint will be executed
+>CMD can be overwritten by passing arguments after the image name in docker run command
 
 
 Activity 1:
