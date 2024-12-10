@@ -52,6 +52,13 @@ sudo usermod -aG docker <user>
      >create network , attach it to database
      >create image 
      >run container with attached volume and database
+Types of nw:
+            >bridge network (single host)
+            >host network (single host)
+            >macvoverlan (single host)
+            >overlay (multi host)
+default is bridge
+
 -For security scan - install trivy to know vulnerability
 -docker registry: public and private(organization use private)
 popular registry :
@@ -181,7 +188,7 @@ npm install -y
 npm run start
 
 
-docker container run -it --name rtjs -p 32001:3000 node:18-alpine /bin/bash
+docker container run -it --name rtjs -p 32001:3000 node:18-alpine /bin/sh
 
 
 Dockerfile:
@@ -216,3 +223,82 @@ CMD ["start"]
 +++++
 
 Activity : Python fastapi application
+
+docker container run -it --name rtjs -P python:alpine3.21 /bin/sh
+apk add --no-cache git 
+git clone https://github.com/dummyrepos/SimpleFastAPI.git
+pip install fastapi uvicorn[standard]
+cd SimpleFastAPI
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+
+Dockerfile:
+#base image
+FROM python:alpine3.21
+
+#metadata for dockerfile
+LABEL author="Shalaka" organization="lt"
+
+COPY . /app
+
+#working directory to run application
+WORKDIR /app/SimpleFastAPI
+
+#downloading necessary dependancies and requirements
+RUN chown -R nobody:nobody /app/SimpleFastAPI && \
+    pip3 install fastapi uvicorn[standard]
+
+#Defining user 
+USER nobody
+
+#exposing required port to run application
+EXPOSE 8000
+
+#defining command to run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Activity :Creating network and attaching pg to Application container :
+
+database environment requirement 
+username
+password
+host
+port
+database name
+
+Flow ---> create network 
+create container of database using base image of database and connect network to it
+create dockerfile for application and mention ENV (database url) 
+
+
+For Creating Database
+docker run -d -P --name pg \
+--network my_net \
+-e "POSTGRES_PASSWORD=password" \
+-e "POSTGRES_USER=user" \
+-e "POSTGRES_DB=libary" \
+postgres:9.6.20 
+
+
+
+to access pg go inside container and run  :
+psql -U user -d libary
+\dt
+\list
+
+
+For creating application container in network with PG
+docker run -d \
+--name testapp \
+-P \
+--network my_net \
+-e "postgresql://user:password@pg:5432/libary" \
+test:1 
+
+
+
+
+
