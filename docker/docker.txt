@@ -1,4 +1,4 @@
-docker ---> 13
+docker ---> 15
 
 k8 ---> 13
 
@@ -10,7 +10,7 @@ ci/cd ---> 12
 
 
 
-docker ---> 5 videos 
+docker ---> 10 done
 
 
 k8 ---> 
@@ -18,6 +18,12 @@ k8 --->
 
 ci/cd --->
 
+
+
+#!/bin/bash
+sudo apt update -y
+curl -fsSL https://get.docker.com -o /tmp/install-docker.sh
+sudo sh /tmp/install-docker.sh
 
 
 
@@ -32,16 +38,31 @@ sudo usermod -aG docker <user>
 -FROM : to choose base image ---> in documents if you see anything in [] is optional
 -LABEL : used to add the metadata
 -RUN : this will execute the command while building the image
-2 forms- Shell and exec 
-RUN in shell form
-CMD and ENTRYPOINT in exec form
+       >2 forms- Shell and exec 
+       >RUN in shell form
+       >CMD and ENTRYPOINT in exec form
 -EXPOSE : published the port
 -ADD/COPY : they are used to copy the files into docker image
 -CMD : this will be executed as PIC1 i.e. when we start the container this command executes and container will be in running state as long as the PIDs is running
->when container start it executes what is present in entrypoint and whatever present in CMD becomes argument to entrypoint
->if entrypoint is not present then whatever written in CMD will be executed 
->if CMD is not present the whatever written in entrypoint will be executed
->CMD can be overwritten by passing arguments after the image name in docker run command
+       >when container start it executes what is present in entrypoint and whatever present in CMD becomes argument to entrypoint
+       >if entrypoint is not present then whatever written in CMD will be executed 
+       >if CMD is not present the whatever written in entrypoint will be executed
+       >CMD can be overwritten by passing arguments after the image name in docker run command
+-Connect application with database:
+     >create network , attach it to database
+     >create image 
+     >run container with attached volume and database
+-For security scan - install trivy to know vulnerability
+-docker registry: public and private(organization use private)
+popular registry :
+                 > docker hub (paid plan)
+                 > Jfrog
+                 > AWS elastic container registry
+                 > Azure container registry
+            
+repository is per application
+registry is per image
+    
 
 
 Activity 1:
@@ -59,9 +80,25 @@ docker run --name ng1 -P -d nginx:1.27
 cd /tmp
 wget https://www.free-css.com/assets/files/free-css-templates/download/page296/finexo.zip
 unzip finexo.zip
-docker container cp /tmp/finexo-html/ ng1:/usr/share/nginx/html/crypto
+docker container cp /tmp/finexo-html ng1:/usr/share/nginx/html/crypto
 
-++++
+
+Dockerfile:
+FROM nginx:1.27
+
+# Set the working directory
+WORKDIR /usr/share/nginx/html/
+
+# Copy files to the working directory
+COPY --chown=nginx:nginx finexo-html/ .
+
+# Switch to the non-root user 'nginx'
+USER nginx
+
+# Expose port 80
+EXPOSE 80
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Activity 2:Run a Spring boot application inside container (Containerizing Spring boot application.)
 
@@ -88,7 +125,44 @@ cd /tmp/spring-petclinic/target/
 java -jar spring-petclinic-3.4.0-SNAPSHOT.jar
 
 
-++++++++
+
+Dockerfile:
+
+FROM eclipse-temurin:21-jdk-alpine AS build
+
+LABEL project="testing" stage="first"
+
+
+RUN apk update && \
+    apk add --no-cache git shadow && \
+    git clone https://github.com/spring-projects/spring-petclinic.git && \
+    cd spring-petclinic/ && \
+    ./mvnw package
+
+
+#Runtime base image
+FROM eclipse-temurin:21-jre-alpine
+
+#adding metadata about project
+LABEL project="testing" stage="final"
+
+#copying folder from stage first to final
+COPY --from=build spring-petclinic /tmp/spring-petclinic
+
+WORKDIR /tmp
+
+#switching the directory at jar path
+RUN chown -R nobody:nobody /tmp/spring-petclinic
+
+#user to run application
+USER nobody
+
+#Running the application
+CMD ["java", "-jar", "/tmp/spring-petclinic/target/spring-petclinic-3.4.0-SNAPSHOT.jar"] 
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Activity3:Run a reactjs application
 
 manual steps:
@@ -106,4 +180,39 @@ cd simple-reactjs-app/
 npm install -y
 npm run start
 
+
+docker container run -it --name rtjs -p 32001:3000 node:18-alpine /bin/bash
+
+
+Dockerfile:
+
+FROM node:18 AS build
+
+
+RUN git clone https://github.com/aditya-sridhar/simple-reactjs-app.git && \
+    cd simple-reactjs-app && \
+    npm install -y
+
+
+FROM  node:18-alpine
+
+COPY --from=build  simple-reactjs-app   /tmp/
+
+# Set the working directory for subsequent commands
+WORKDIR /tmp/simple-reactjs-app
+
+RUN chown -R node /tmp/simple-reactjs-app
+
+
+USER node
+
+EXPOSE 3000
+
+ENTRYPOINT ["npm" , "run"]
+
+CMD ["start"]
+
+
 +++++
+
+Activity : Python fastapi application
