@@ -59,3 +59,46 @@ kubeadm join 172.31.28.174:6443 --token y97qec.hxxc1ukgbrqeiqry \
 (Link: https://gist.github.com/rkaramandi/44c7cea91501e735ea99e356e9ae7883)
 
 kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+k8 - 
+==>Is a open source system for automating deployment, scaling and management of container application
+
+==>Alternatives for k8 : 
+-docker swarm
+-apache mesos
+-aws ECS
+
+==>Kubernetes creates a cluster which is combination of multiple nodes categorized as
+Worker node (node): Here the application workloads are executed
+Master Node: They manage the cluster 
+
+
+==>Ways to setup Kubernetes-->
+Single System (Developer): This is workstation environment for developmental purposes, Here we have following major options
+-minikube
+-kind
+
+
+Self Hosted:
+-kubeadm
+-kubespray (install k8s using ansible )
+
+Cloud Hosted:
+-AWS: Elastic Kubernetes Services (EKS)
+-Azure: Azure Kuberenetes Services (AKS)
+-GCP: Google Kubernetes Engine (GKE)
+
+
+
+==>Pod
+This is the smallest unit of creation by k8s
+A Pod has one or more containers in it
+Every Pod gets a unique ipaddress
+
+
+
