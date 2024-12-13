@@ -69,7 +69,12 @@ popular registry :
             
 repository is per application
 registry is per image
+-default storage layer is Overlay2
+You can check it by running docker info command
+
+-.dockerignore file to mention what we need to ignore
     
+
 
 
 Activity 1:
@@ -260,7 +265,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Activity :Creating network and attaching pg to Application container :
+Activity :Creating network and attaching pg to Application container :(incomplete)
 
 database environment requirement 
 username
@@ -300,5 +305,9 @@ test:1
 
 
 
+
++++++++++++++
+
+exercise : mysql, mongodb , microsoftsql server database with volume in a container
 
 

@@ -1,0 +1,61 @@
+kuberneters:
+
+
+Installation using Self host:
+
+-create EC2 machine - min requirement is 2CPU and 2gb RAM
+
+-install docker on all machines  
+(use to run container )
+#!/bin/bash
+sudo apt update -y
+curl -fsSL https://get.docker.com -o install-docker.sh
+sh /tmp/install-docker.sh
+
+
+
+-installing cri-dockerd on all nodes (Link :https://mirantis.github.io/cri-dockerd/usage/install/)
+(Use of cri-dockerd- this will allow docker to be used as container runtime in kubernetes)
+cd /tmp
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.16/cri-dockerd_0.3.16.3-0.ubuntu-jammy_amd64.deb
+sudo dpkg -i cri-dockerd_0.3.16.3-0.ubuntu-jammy_amd64.deb
+
+
+
+-install kubeadm, kubectl on all nodes
+(Link: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+(Use of kubeadm: used to setup k8s control plane , which includes API server, schedular, controller manager and gives join command to connect worker nodes
+kubectl is used to interact with k8s API server , can perform cli operation to check cluster status, view pods , etc)
+
+sudo apt-get update
+# apt-transport-https may be a dummy package; if so, you can skip that package
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+sudo systemctl enable --now kubelet
+
+
+-Run below command as root user on master node:
+kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket "unix:///var/run/cri-dockerd.sock"
+(here kubeadm init : initialize k8s control plane and sets up all necessary components like API server, controller manager and schedular
+--pod-network : defines IP address range, ensure all pods communicate with each other 
+cri-socket: tell which container runtime to use)
+
+-To start using your cluster,  configure kubectl on master node ,you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+-run join command on worker nodes: 
+kubeadm join 172.31.28.174:6443 --token y97qec.hxxc1ukgbrqeiqry \
+        --discovery-token-ca-cert-hash sha256:8f3082471667d8a3264a4d3a560523b44e9d03100de475b65da6f76ba5ac373d --cri-socket "unix:///var/run/cri-dockerd.sock"
+
+
+-To install flannel CNI plugins on master nodes
+(Link: https://gist.github.com/rkaramandi/44c7cea91501e735ea99e356e9ae7883)
+
+kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
