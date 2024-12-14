@@ -102,3 +102,10 @@ Every Pod gets a unique ipaddress
 
 
 
+crashlookback ===> container is in exited state
+
++++++++++++++++++++++++++++++++++++++++++
+overriding entrypoint ==>use command
+overriding cmd ==> use args   
+++++++++++++++++++++++++++++++++++++++++
+

@@ -1,29 +1,68 @@
-docker ---> 15
+docker ---> 12
 
-k8 ---> 13
+k8 ---> 18
 
-ci/cd ---> 12
+ci/cd ---> 19
 
-
-
-
+Jenkins ---> 19
 
 
 
-docker ---> 10 done
+
+13days
+
+docker --->  done
 
 
 k8 ---> 
+01/Dec/2024 – 
+30/Nov/2024 – 
+03/Nov/2024 – 
+02/Nov/2024 – 
+27/Oct/2024 – 
+26/Oct/2024 – 
+25/Oct/2024 – 
+24/Oct/2024 – 
+23/Oct/2024 – 
+22/Oct/2024 – 
+20/Oct/2024 – 
+19/Oct/2024 – 
+19/Oct/2024 – need practice
+18/Oct/2024 – done
+17/Oct/2024 – done
+16/Oct/2024 – done
 
 
 ci/cd --->
 
+
+Jenins:
+30/Jul  -intro
+31/Jul  -git  -done
+02/Aug  -git  -done
+03/Aug  -git
+04/Aug  -git
+07/Aug  -git
+08/Aug  -git
+09/Aug  -git
+10/Aug  -maven
+11/Aug  -jenkins
+24/Aug  -jenkins
+21/Aug  -jenkins
+20/Aug  -jenkins
+18/Aug  -jenkins
+17/Aug  -jenkins
+16/Aug  -jenkins
+15/Aug  -jenkins
+14/Aug  -jenkins
+13/Aug  -jenkins
 
 
 #!/bin/bash
 sudo apt update -y
 curl -fsSL https://get.docker.com -o /tmp/install-docker.sh
 sudo sh /tmp/install-docker.sh
+sudo usermod -aG docker ubuntu
 
 
 

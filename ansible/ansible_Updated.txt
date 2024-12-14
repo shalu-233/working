@@ -1,0 +1,124 @@
+sudo apt update -y
+sudo apt install software-properties-common -y
+sudo add-apt-repository --yes --update ppa:ansible/ansible -y
+sudo apt install ansible -y
+
+on master server (ubuntu)
+
+1.sudo adduser devops
+
+2.sudo visudo
+add this---->devops  ALL=(ALL:ALL) NOPASSWD:ALL
+
+3.sudo vi /etc/ssh/sshd_config
+uncomment ---> PasswordAuthentication yes
+
+
+
+4.sudo vi /etc/ssh/sshd_config.d/*.conf
+make yes ---> PasswordAuthentication no
+
+5.sudo systemctl restart ssh
+
+ssh-keygen
+
+
+++++++++++++++++
+
+do this 1 to 5 steps on ubuntu and redhat as per config files
+
+here in redhat instead of /etc/ssh/sshd_config.d/*.conf change below config file:
+sudo vi  /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+sudo systemctl restart sshd
+
++++++++++++++++
+
+on master server: 
+ssh-copy-id devops@172.31.85.145
+
++++++++++++++
+
+to create roles:
+
+ansible-galaxy init roles
+
+
+
+
+For knowledge only:
+telnet - port open / dest connectivity
+ubuntu@ip-172-31-80-176:~$ telnet 3.86.237.223 22
+Trying 3.86.237.223...
+Connected to 3.86.237.223.
+Escape character is '^]'.
+SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.5
+
+ping - 
+ubuntu@ip-172-31-80-176:~$ ping 3.86.237.223
+PING 3.86.237.223 (3.86.237.223) 56(84) bytes of data.
+64 bytes from 3.86.237.223: icmp_seq=1 ttl=63 time=0.266 ms
+64 bytes from 3.86.237.223: icmp_seq=2 ttl=63 time=0.274 ms
+^C
+--- 3.86.237.223 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1009ms
+rtt min/avg/max/mdev = 0.266/0.270/0.274/0.004 ms
+
+
+netcat ---> nc -zv FQDN/IP_address port
+ubuntu@ip-172-31-80-176:~$ nc -zv 3.86.237.223 22
+Connection to 3.86.237.223 22 port [tcp/ssh] succeeded!
+
+ubuntu@ip-172-31-80-176:~$ nc -zv 172.31.86.136 22
+nc: connect to 172.31.86.136 port 22 (tcp) failed: No route to host
+
+ubuntu@ip-172-31-80-176:~$ nc -zv 3.86.237.223 443
+nc: connect to 3.86.237.223 port 443 (tcp) failed: Connection refused
+
+
+
+nslookup:
+ubuntu@ip-172-31-80-176:~$ nslookup google.com
+Server:         127.0.0.53
+Address:        127.0.0.53#53
+
+Non-authoritative answer:
+Name:   google.com
+Address: 172.253.63.138
+
+
+
+
+trace route:
+ubuntu@ip-172-31-80-176:~$ traceroute google.com
+traceroute to google.com (142.251.111.139), 30 hops max, 60 byte packets
+ 1  100.100.8.22 (100.100.8.22)  1.109 ms 100.100.38.22 (100.100.38.22)  1.081 ms 100.100.38.82 (100.100.38.82)  1.064 ms
+ 2  * * *
+ 3  100.100.2.44 (100.100.2.44)  1.009 ms 100.100.2.122 (100.100.2.122)  1.067 ms 100.100.4.18 (100.100.4.18)  1.406 ms
+ 4  99.82.181.25 (99.82.181.25)  0.865 ms *  0.833 ms
+ 5  * * *
+ 6  209.85.252.18 (209.85.252.18)  0.978 ms 142.251.67.232 (142.251.67.232)  2.638 ms 209.85.252.18 (209.85.252.18)  0.910 ms
+ 7  192.178.243.4 (192.178.243.4)  1.010 ms 192.178.242.24 (192.178.242.24)  1.990 ms 192.178.242.26 (192.178.242.26)  1.360 ms
+ 8  108.170.235.157 (108.170.235.157)  1.329 ms 216.239.63.237 (216.239.63.237)  1.678 ms 142.251.49.192 (142.251.49.192)  2.329 ms
+ 9  142.250.59.235 (142.250.59.235)  2.314 ms 142.251.237.185 (142.251.237.185)  2.934 ms 142.251.238.39 (142.251.238.39)  2.825 ms
+10  142.250.209.59 (142.250.209.59)  2.441 ms 142.250.210.4 (142.250.210.4)  2.418 ms 216.239.43.232 (216.239.43.232)  2.062 ms
+11  142.251.227.135 (142.251.227.135)  1.813 ms 142.251.66.227 (142.251.66.227)  2.067 ms 142.251.227.133 (142.251.227.133)  2.049 ms
+12  * * *
+13  * * *
+14  * * *
+15  * * *
+16  * * *
+17  * * *
+18  * * *
+19  * * bk-in-f139.1e100.net (142.251.111.139)  2.085 ms
+
+
+tcp dump
+ 942, length 364
+14:10:19.533339 IP ip-172-31-80-176.ec2.internal.ssh > abts-north-dynamic-65.87.233.223.airtelbroadband.in.30733: Flags [P.], seq 48516:48552, ack 1801, win 942, length 36
+14:10:19.636726 IP ip-172-31-80-176.ec2.internal.ssh > abts-north-dynamic-65.87.233.223.airtelbroadband.in.30733: Flags [P.], seq 48552:48940, ack 1801, win 942, length 388
+14:10:19.649613 IP abts-north-dynamic-65.87.233.223.airtelbroadband.in.30733 > ip-172-31-80-176.ec2.internal.ssh: Flags [.], ack 47788, win 256, length 0
+256 packets captured
+262 packets received by filter
+0 packets dropped by kernel
+

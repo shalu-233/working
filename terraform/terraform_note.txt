@@ -1,3 +1,6 @@
+https://www.prodevopsguy.tech/posts/Terraform-Usecases-With-Example-Codes?form=MG0AV3----> for practice
+
+
 for azure need to pass subscription id and feature in provider
 
 
@@ -81,6 +84,10 @@ terraform execution:
 **terraform workspace:
 
 **terraform taint:
+
+
+rm -f .terraform.lock.hcl
+terraform init -upgrade
 
 
 

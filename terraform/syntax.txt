@@ -12,4 +12,3 @@ to use attributes the syntax is
 eg
 aws_vpc.base.id
 
-
