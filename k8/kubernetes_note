@@ -102,10 +102,12 @@ Every Pod gets a unique ipaddress
 
 
 
-crashlookback ===> container is in exited state
+==>crashlookback ===> container is in exited state and k8s keeps restarting it
 
-+++++++++++++++++++++++++++++++++++++++++
-overriding entrypoint ==>use command
-overriding cmd ==> use args   
-++++++++++++++++++++++++++++++++++++++++
+==>overriding entrypoint ==>use command
+==>overriding cmd ==> use args   
 
+==>if you have multiple container , if you want to access any container in pod by default it will choose main CAR i.e first container written in YAML menifest
+So to choose container use -c <container_name>
+==>env should be passed while creating container
+==>Labels we can pass after creating containers 
