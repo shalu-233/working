@@ -10,14 +10,15 @@ metadata:
 spec:
   containers:
     - name: spc
-      image: sshaikkhajaibrahim/spcjan2024:1.0
+      image: shalaka136795/learning-test:2.0
       resources:
         limits: 
           cpu: 500m
           memory: 100M
         requests: 
-          cpu: 250
+          cpu: 250m
           memory: 64M
       ports:
         - containerPort: 8080
           protocol: TCP
+

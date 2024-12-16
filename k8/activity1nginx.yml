@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: webserver
-      image: nginx:1.27
+      image: shalaka136795/learning-test:nginx
     - name: busybox
       image: busybox:1.37
 
