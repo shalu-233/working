@@ -9,7 +9,7 @@ Installation using Self host:
 (use to run container )
 #!/bin/bash
 sudo apt update -y
-curl -fsSL https://get.docker.com -o install-docker.sh
+curl -fsSL https://get.docker.com -o /tmp/install-docker.sh
 sh /tmp/install-docker.sh
 
 
@@ -27,7 +27,7 @@ sudo dpkg -i cri-dockerd_0.3.16.3-0.ubuntu-jammy_amd64.deb
 (Use of kubeadm: used to setup k8s control plane , which includes API server, schedular, controller manager and gives join command to connect worker nodes
 kubectl is used to interact with k8s API server , can perform cli operation to check cluster status, view pods , etc)
 
-sudo apt-get update
+sudo apt-get update -y
 # apt-transport-https may be a dummy package; if so, you can skip that package
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
@@ -59,8 +59,12 @@ kubeadm join 172.31.28.174:6443 --token y97qec.hxxc1ukgbrqeiqry \
 (Link: https://gist.github.com/rkaramandi/44c7cea91501e735ea99e356e9ae7883)
 
 kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 
 
+
+
+To setup autocompletion : source <(kubectl completion bash)
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -90,7 +94,7 @@ Self Hosted:
 
 Cloud Hosted:
 -AWS: Elastic Kubernetes Services (EKS)
--Azure: Azure Kuberenetes Services (AKS)
+-Azure: Azure Kubernetes Services (AKS)
 -GCP: Google Kubernetes Engine (GKE)
 
 
@@ -100,14 +104,21 @@ This is the smallest unit of creation by k8s
 A Pod has one or more containers in it
 Every Pod gets a unique ipaddress
 
-
-
 ==>crashlookback ===> container is in exited state and k8s keeps restarting it
-
 ==>overriding entrypoint ==>use command
 ==>overriding cmd ==> use args   
-
 ==>if you have multiple container , if you want to access any container in pod by default it will choose main CAR i.e first container written in YAML menifest
-So to choose container use -c <container_name>
+So to choose container use -c <container name>
 ==>env should be passed while creating container
 ==>Labels we can pass after creating containers 
+==>We can create multiple container in one pod for one application
+e.g we can not run spring-petclinic, nop-commerce in same pod
+
+==>service is an object which will forward the request to Pods which has matching the labels
+creates virtual ip address and DNS which is fixed 
+To make service accessible , the kub-proxy will do 
+
+==>Note: Exposing Pod directly to external world is not a recommended practice
+
+==>Generally while creating containers it is a good idea to define the cpu and memory limits
+
