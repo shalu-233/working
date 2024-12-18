@@ -30,7 +30,7 @@ spec:
               cpu: 250m
           env:
             - name: DATABASE_URL
-              value: “postgresql://books:password@books-db:5432/booksdb“
+              value: “postgresql://user:password@books-db:5432/booksdb“
             - name: SECRET_KEY
               value: "YtDEVWnL35aAIP-5yxeLjAZ49R920-mMNDfwPyWULu63HFsYzo0f-LO2InxC8eu428k"
           ports:
