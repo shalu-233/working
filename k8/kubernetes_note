@@ -214,9 +214,14 @@ Secrets:
         3.Restrict Secret access to specific containers.
 	4.Consider using external Secret store providers.
 
+config maps and secret:
+-envfrom ===> use when want to load all config
+-valuefrom ===> use when want to load specific from config
+
 -the production approach for storing sensitive information will be:
 	1.Use an external secrets manager like azure key vault, aws secrets manager, gcp secrets manager or hashicorp vault
 	2.Use secrets CSI Driver of a vendor to get the sensitive information into k8s as storage
+
 
 Health Checks or Probes in  Kubernetes:
 In K8s we have 3 types of Probes, as per requirement you can use any of them or all:
@@ -229,3 +234,10 @@ If probe fails, this container will not recieve requests from service
 -Startup Probe:
 Determines if the container starup is complete or not
 If this probe fails no further probes are executed
+
+
+
+Daemonsets: 
+-Daemonsets are used to run a pod on each node or selected nodes
+-They are useful for running agent like  software's in container
+-Daemonset support rolling updates like deployments

@@ -1,0 +1,40 @@
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata: 
+  name: test-ds
+spec:
+  minReadySeconds: 10
+  selector: 
+    matchLabels: 
+      app: agent
+  template:
+    metadata: 
+      labels:
+        app: agent
+    spec:
+      containers:
+        name: fluentd
+        image: fluent/fluentd:edge-debian
+        livenessProbe:
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - ps aux | grep fluentd
+        restartPolicy: Always
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 200m
+          limits:
+            memory: 128Mi
+            cpu: 300m
+        ports:
+          - containerPort: 9880
+            name: fluentd
