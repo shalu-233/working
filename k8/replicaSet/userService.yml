@@ -30,7 +30,7 @@ spec:
               cpu: 250m
           env:
             - name: DATABASE_URL
-              value: “postgresql://user:password@users-db:5432/usersdb“
+              value: "postgresql://user:password@users-db:5432/usersdb"
             - name: SECRET_KEY
               value: "YtDEVWnL35aAIP-5yxeLjAZ49R920-mMNDfwPyWULu63HFsYzo0f-LO2InxC8eu428k"
           ports:
