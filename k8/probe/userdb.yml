@@ -1,0 +1,72 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-db-rs
+  labels:
+    app: users-db
+spec:
+  minReadySeconds: 5
+  replicas: 2
+  selector:
+    matchLabels:
+      db: users
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      name: database
+      labels:
+        db: users
+    spec:
+      containers:
+        - name: database
+          image: postgres:15-alpine
+          startupProbe:
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - ps aux | grep postgres
+          livenessProbe:
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            tcpSocket: 
+              port: 5432  
+          envFrom:
+            - secretRef:
+                name: users-db-secret
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 100m
+            limits:
+              memory: 100Mi
+              cpu: 250m
+          ports:
+            - containerPort: 5432
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-db
+spec:
+  type: NodePort
+  selector:
+    db: users
+  ports:
+    - port: 5432
+      targetPort: 5432
