@@ -9,8 +9,9 @@ Installation using Self host:
 (use to run container )
 #!/bin/bash
 sudo apt update -y
-curl -fsSL https://get.docker.com -o /tmp/install-docker.sh
-sh /tmp/install-docker.sh
+curl -fsSL https://get.docker.com -o install-docker.sh
+sh install-docker.sh
+sudo usermod -aG docker ubuntu
 
 
 
@@ -59,12 +60,17 @@ kubeadm join 172.31.28.174:6443 --token y97qec.hxxc1ukgbrqeiqry \
 (Link: https://gist.github.com/rkaramandi/44c7cea91501e735ea99e356e9ae7883)
 
 kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
-kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 
 
 
 
 To setup autocompletion : source <(kubectl completion bash)
+
+
+if flannel not working then do below:
+curl -LO https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+ls -lh calico.yaml
+kubectl apply -f calico.yaml
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -122,3 +128,104 @@ To make service accessible , the kub-proxy will do
 
 ==>Generally while creating containers it is a good idea to define the cpu and memory limits
 
+==>types of service port:
+-ClusterIP---> This is the default service type. It provides a single IP address that is only accessible within the Kubernetes cluster2. It's useful for internal communication between services
+-NodePort --> This type exposes a service on a static port on each node's IP address. It allows external access to the service by using the node's IP and the designated port2. This is useful for testing and development purpose
+-ExternalName --> This type maps the service to an external name (DNS) instead of an IP address. It's useful for accessing services outside the cluster without exposing a specific port
+-LoadBalancer -->This type provisions an external load balancer (if supported by the cloud provider) and assigns a publicly accessible IP address to the service. It's ideal for production environments where you need to expose your service to the internet
+
+
+
+
+===>Deployment : which creates replica set , replicasets create pods which in turn runs the containers
+Deployments are suitable for stateless applications
+These come with two strategies
+-Recreate
+-RollingUpdated (default):
+In Rolling updates
+We can rollout New versions
+undo rollout (rollbacks)
+MaxSurge: The maximum number of pods that can be scheduled above the desired number of pods. (value can be num/percentage)
+maxUnavailable	The maximum number of pods that can be unavailable during the update(value can be num/percentage)
+
+
+
+Annotation: are like labels but we can use them for query
+are used to modifying objects
+
+When to Use kubectl rollout pause  : Scenarios
+
+1. Staging Changes for Review
+Scenario: You have multiple changes ready to be deployed but want to review them collectively before they go live.
+Benefit: Pausing the rollout allows you to inspect the current state of the application and ensure that everything is in order before proceeding with the deployment.
+2. Mitigating Issues During Deployment
+Scenario: You notice unexpected behavior or errors during a deployment.
+Benefit: By pausing the rollout, you can halt the process, investigate the issue, and make necessary adjustments without further complicating the situation.
+3. Coordinating with Other Teams
+Scenario: Your deployment is part of a larger release that involves multiple teams or services.
+Benefit: Pausing allows you to synchronize with other teams, ensuring that all components are ready and compatible before proceeding.
+4. Testing New Features
+Scenario: You want to test a new feature in a controlled manner without affecting users immediately.
+Benefit: Pausing the rollout gives you time to conduct thorough testing and validation before making the feature available to all users.
+5. Rolling Back Changes
+Scenario: You need to roll back to a previous version due to issues with the latest deployment.
+Benefit: Pausing allows you to revert changes safely without introducing additional errors during the rollback process.
+6. Managing Resource Constraints
+Scenario: Your cluster is under heavy load, and you want to prevent further resource consumption while addressing performance issues.
+Benefit: Pausing rollouts can help manage resource utilization effectively, allowing you time to resolve underlying issues.
+
+
+command to delete rollout version for a deployment:
+kubectl delete deployment <deployment name>
++++++++++++++++++++
+
+
+Managed clusters:
+Cloud providers manage the control plane i.e. we need not install k8s and the control plane will be a black box
+
+cloud providers:
+-AKS - Azure Kubernetes service
+-EKS - Amazon Elastic Kubernetes Service
+-GKE - Google Kubernetes Engine 
+
+
+
+configMaps:
+-it is use to store non-confidential data in key-value pairs.
+-Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
+-ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.
+-There are four different ways that you can use a ConfigMap to configure a container inside a Pod:
+
+	1.Inside a container command and args
+	2.Environment variables for a container
+	3.Add a file in read-only volume, for the application to read
+	4.Write code to run inside the Pod that uses the Kubernetes API to read a ConfigMap
+-immutable: If set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
+
+Secrets:
+-A Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key.
+-Secrets are similar to ConfigMaps but are specifically intended to hold confidential data.
+-Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd). 
+  hence the one which has access to API server or access to create pod in namespace can access/modify secret key
+-In order to safely use Secrets, take at least the following steps:
+
+	1.Enable Encryption at Rest for Secrets.
+	2.Enable or configure RBAC rules with least-privilege access to Secrets.
+        3.Restrict Secret access to specific containers.
+	4.Consider using external Secret store providers.
+
+-the production approach for storing sensitive information will be:
+	1.Use an external secrets manager like azure key vault, aws secrets manager, gcp secrets manager or hashicorp vault
+	2.Use secrets CSI Driver of a vendor to get the sensitive information into k8s as storage
+
+Health Checks or Probes in  Kubernetes:
+In K8s we have 3 types of Probes, as per requirement you can use any of them or all:
+-Liveness Probe:
+Determines if the container is running or not
+If Probe fails the container is restarted
+-Readiness Probe:
+Determines if the application is running or not
+If probe fails, this container will not recieve requests from service
+-Startup Probe:
+Determines if the container starup is complete or not
+If this probe fails no further probes are executed

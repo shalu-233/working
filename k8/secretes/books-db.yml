@@ -27,8 +27,8 @@ spec:
         - name: database
           image: postgres:15-alpine
           envFrom:
-            - configMapRef:
-                name: books-db-config
+            - secretRef:
+                name: books-db-secret
           resources:
             requests:
               memory: 64Mi
