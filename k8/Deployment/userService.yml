@@ -6,6 +6,8 @@ metadata:
   name: users
   labels:
     app: users-svc-rs
+  annotations: 
+    kubernetes.io/change-cause: "version-1"
 spec:
   minReadySeconds: 5
   replicas: 2

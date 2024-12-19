@@ -6,13 +6,15 @@ metadata:
   name: books-db-rs
   labels:
     app: books-db
+  annotations: 
+    kubernetes.io/change-cause: "version-1"
 spec:
   minReadySeconds: 5
   replicas: 2
   selector:
     matchLabels:
       db: books
-    strategy:
+  strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1

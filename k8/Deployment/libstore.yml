@@ -6,6 +6,8 @@ metadata:
   name: library
   labels:
     app: lib-svc-rs
+  annotations: 
+    kubernetes.io/change-cause: "version-1"
 spec:
   minReadySeconds: 5
   replicas: 2
