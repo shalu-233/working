@@ -3,9 +3,9 @@
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata: 
-  name: user-db-rs
+  name: users-db-rs
   labels:
-    app: user-db
+    app: users-db
 spec:
   minReadySeconds: 5
   replicas: 2
@@ -40,10 +40,11 @@ spec:
 
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-db
+  name: users-db
 spec:
   type: NodePort
   selector:

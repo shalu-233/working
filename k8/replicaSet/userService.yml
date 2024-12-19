@@ -3,24 +3,24 @@
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata: 
-  name: user
+  name: users
   labels:
-    app: user-svc-rs
+    app: users-svc-rs
 spec:
   minReadySeconds: 5
   replicas: 2
   selector:
     matchLabels:
-      app: user-svc
+      app: users-svc
   template:
     metadata:
-      name: user
+      name: users
       labels: 
-        app: user-svc
+        app: users-svc
     spec:
       containers:
-        - image: shaikkhajaibrahim/libusersvc:1.0
-          name: user-service
+        - image: shaikkhajaibrahim/libuserssvc:1.0
+          name: users-service
           resources:
             requests: 
               memory: 64Mi
@@ -30,7 +30,7 @@ spec:
               cpu: 250m
           env:
             - name: DATABASE_URL
-              value: “postgresql://user:password@user-db:5432/userdb“
+              value: “postgresql://user:password@users-db:5432/usersdb“
             - name: SECRET_KEY
               value: "YtDEVWnL35aAIP-5yxeLjAZ49R920-mMNDfwPyWULu63HFsYzo0f-LO2InxC8eu428k"
           ports:
@@ -41,11 +41,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-svc
+  name: users-svc
 spec:
   type: NodePort
   selector:
-    app: user-svc
+    app: users-svc
   ports:
     - port: 80
       targetPort: 8000
